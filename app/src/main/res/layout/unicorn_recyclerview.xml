@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/need_card"
+    android:layout_width="match_parent"
+    android:layout_height="64dp"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginEnd="16dp"
+    android:orientation="vertical"
+    android:background="#000000"
+    app:cardElevation="3dp">
+
+    <ImageButton
+        android:id="@+id/need_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/ic_sentiment_very_satisfied_black_24dp"
+        android:minWidth="48dp"
+        android:minHeight="48dp"/>
+
+</android.support.v7.widget.CardView>

@@ -1,0 +1,13 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">#5555ff</item>
+        <item name="colorPrimaryDark">#3a3aff</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:fontFamily">@font/press_start_2p</item>
+        <item name="android:textSize">6pt</item>
+    </style>
+
+</resources>
