@@ -9,7 +9,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Path;
 
 public interface AccessUnicorn {
-    @GET("/UnicornApi/GetAll")
+    @GET("/UnicornApi/GetAllUnicorns")
     Call<List<Unicorn>> getAllUnicorns();
 
     @GET("/UnicornApi/{id}")

@@ -8,7 +8,6 @@
     android:layout_height="match_parent"
     tools:context=".ui.main.MainFragment">
 
-
     <android.support.v7.widget.CardView
         android:id="@+id/name"
         android:layout_width="match_parent"
@@ -83,23 +82,119 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.77"/>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/unicorns_recyclerview"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="16dp"
-        android:clipChildren="true"
-        android:clipToPadding="true"
-        android:overScrollMode="never"
-        app:layout_constraintBottom_toTopOf="@+id/divider"
+
+    <android.support.v7.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fetch_data"
-        tools:layoutManager="android.support.v7.widget.StaggeredGridLayoutManager"
-        tools:listitem="@layout/unicorn_recyclerview"
-        tools:orientation="vertical"
-        tools:reverseLayout="true"
-        tools:spanCount="3"/>
+        app:layout_constraintTop_toTopOf="parent">
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/disc_parent"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="#000000"
+            android:orientation="vertical"
+            app:cardElevation="3dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageButton
+                android:id="@+id/discipline_need_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/ic_sentiment_dissatisfied_black_24dp"
+                android:minWidth="48dp"
+                android:minHeight="48dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center_horizontal"
+                android:text="Disc"/>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="98dp"
+            android:layout_marginEnd="16dp"
+            android:background="#000000"
+            android:orientation="vertical"
+            app:cardElevation="3dp">
+
+            <ImageButton
+                android:id="@+id/play_need_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/ic_sentiment_very_satisfied_black_24dp"
+                android:minWidth="48dp"
+                android:minHeight="48dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center_horizontal"
+                android:text="Play"/>
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="180dp"
+            android:layout_marginEnd="16dp"
+            android:background="#000000"
+            android:orientation="vertical"
+            app:cardElevation="3dp">
+
+            <ImageButton
+                android:id="@+id/toilet_need_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/ic_sentiment_satisfied_black_24dp"
+                android:minWidth="48dp"
+                android:minHeight="48dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center_horizontal"
+                android:text="Toil"/>
+
+        </android.support.v7.widget.CardView>
+
+    </android.support.v7.widget.CardView>
+
+    <!--<android.support.v7.widget.RecyclerView-->
+    <!--android:id="@+id/unicorns_recyclerview"-->
+    <!--android:layout_width="0dp"-->
+    <!--android:layout_height="0dp"-->
+    <!--android:layout_marginTop="16dp"-->
+    <!--android:clipChildren="true"-->
+    <!--android:clipToPadding="true"-->
+    <!--android:overScrollMode="never"-->
+    <!--app:layout_constraintBottom_toTopOf="@+id/divider"-->
+    <!--app:layout_constraintEnd_toEndOf="parent"-->
+    <!--app:layout_constraintStart_toStartOf="parent"-->
+    <!--app:layout_constraintTop_toBottomOf="@+id/fetch_data"-->
+    <!--tools:layoutManager="android.support.v7.widget.StaggeredGridLayoutManager"-->
+    <!--tools:listitem="@layout/needs_recyclerview"-->
+    <!--tools:orientation="vertical"-->
+    <!--tools:reverseLayout="true"-->
+    <!--tools:spanCount="3"/>-->
 
     <TextView
         android:id="@+id/happiness_chart"

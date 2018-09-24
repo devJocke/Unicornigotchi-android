@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/nav_graph"
+            app:startDestination="@id/mainFragment">
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.example.jocke.unicornigotchi.ui.main.MainFragment"
+        android:label="main_fragment"
+        tools:layout="@layout/main_fragment">
+        <action
+            android:id="@+id/action_mainFragment_to_disciplineFragment"
+            app:destination="@id/disciplineFragment"
+            />
+        <action
+            android:id="@+id/action_mainFragment_to_playFragment"
+            app:destination="@id/playFragment"/>
+        <action
+            android:id="@+id/action_mainFragment_to_toiletFragment"
+            app:destination="@id/toiletFragment"/>
+    </fragment>
+    <fragment
+        android:id="@+id/disciplineFragment"
+        android:name="com.example.jocke.unicornigotchi.ui.main.DisciplineFragment"
+        android:label="DisciplineFragment"
+        tools:layout="@layout/discipline_main"/>
+    <fragment
+        android:id="@+id/toiletFragment"
+        android:name="com.example.jocke.unicornigotchi.ui.main.ToiletFragment"
+        android:label="ToiletFragment"/>
+    <fragment
+        android:id="@+id/playFragment"
+        android:name="com.example.jocke.unicornigotchi.ui.main.PlayFragment"
+        android:label="PlayFragment"/>
+
+</navigation>

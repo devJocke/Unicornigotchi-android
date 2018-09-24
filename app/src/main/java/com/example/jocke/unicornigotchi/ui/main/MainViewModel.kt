@@ -38,7 +38,7 @@ class MainViewModel : ViewModel() {
         val builder = Retrofit.Builder()
                 //Get from 10.0.2.2: on emulator
                 //https://unicornigotchiapi20180916102845.azurewebsites.net/
-                .baseUrl("https://unicornigotchiapi20180916102845.azurewebsites.net/")
+                .baseUrl("http://10.0.2.2:53836/")
                 .addConverterFactory(GsonConverterFactory.create())
         retrofit = builder.build()
         return retrofit
