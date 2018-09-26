@@ -1,5 +1,6 @@
 package com.example.jocke.unicornigotchi.dal;
 
+import com.example.jocke.unicornigotchi.dto.NeedsSum;
 import com.example.jocke.unicornigotchi.dto.Unicorn;
 
 import java.util.List;
@@ -13,5 +14,9 @@ public interface AccessUnicorn {
     Call<List<Unicorn>> getAllUnicorns();
 
     @GET("/UnicornApi/{id}")
-    Call<List<Unicorn>> getUnicorn(@Path("unicorn") String unicorn);
+    Call<Unicorn> getUnicorn(@Path("id")  Integer id);
+
+    @GET("/UnicornApi/SumOfAllNeeds")
+    Call<NeedsSum> getUnicornNeedsSum();
+
 }

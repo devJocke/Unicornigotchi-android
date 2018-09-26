@@ -5,6 +5,7 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.util.Log
 import com.example.jocke.unicornigotchi.dal.AccessUnicorn
+import com.example.jocke.unicornigotchi.dto.NeedsSum
 import com.example.jocke.unicornigotchi.dto.Unicorn
 import retrofit2.Call
 import retrofit2.Callback
@@ -15,19 +16,31 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class MainViewModel : ViewModel() {
 
-    private var unicorns: MutableLiveData<List<Unicorn>>? = null
+    private var unicorn: MutableLiveData<Unicorn>? = null
+    private var needsSum: MutableLiveData<NeedsSum>? = null
     private var retrofit: Retrofit? = null
 
 
-    fun getUnicorns(): LiveData<List<Unicorn>> {
-        if (unicorns == null) {
-            unicorns = MutableLiveData()
+    fun getUnicornLiveData(): LiveData<Unicorn> {
+        if (unicorn == null) {
+            unicorn = MutableLiveData()
         }
-        return unicorns as MutableLiveData<List<Unicorn>>
+        return unicorn as MutableLiveData<Unicorn>
     }
 
-    fun fetchData() {
-        getAllUnicorns()
+    fun getPositiveNeedsLiveData(): LiveData<NeedsSum> {
+        if (needsSum == null) {
+            needsSum = MutableLiveData()
+        }
+        return needsSum as MutableLiveData<NeedsSum>
+    }
+
+    fun fetchUnicorn(id: Int) {
+        getUnicorn(id)
+    }
+
+    fun fetchSumOfPositiveNeeds() {
+        getPositiveNeeds()
     }
 
 
@@ -44,38 +57,39 @@ class MainViewModel : ViewModel() {
         return retrofit
     }
 
-    private fun getAllUnicorns() {
+    private fun getUnicorn(id: Int) {
         retrofit?.let {
             val client: AccessUnicorn = it.create(AccessUnicorn::class.java)
-            val unicornClient = client.allUnicorns
+            val unicornClient = client.getUnicorn(id)
 
 
-            unicornClient.enqueue(object : Callback<List<Unicorn>> {
-                override fun onFailure(call: Call<List<Unicorn>>?, t: Throwable?) {
+            unicornClient.enqueue(object : Callback<Unicorn> {
+                override fun onFailure(call: Call<Unicorn>?, t: Throwable?) {
                     Log.e("ERROR", t?.message)
                 }
 
-                override fun onResponse(call: Call<List<Unicorn>>?, response: Response<List<Unicorn>>?) {
-                    unicorns?.value = response?.body()
+                override fun onResponse(call: Call<Unicorn>?, response: Response<Unicorn>?) {
+                    unicorn?.value = response?.body()
                 }
             })
         }
     }
 
+    private fun getPositiveNeeds() {
+        retrofit?.let {
+            val client: AccessUnicorn = it.create(AccessUnicorn::class.java)
+            val unicornClient = client.unicornNeedsSum
 
-    private var count1: MutableLiveData<Int>? = null
-    private var count = 0
-    //Increment test
-    fun incrementCount() {
-        count++
-        count1?.value = count
-    }
 
-    fun getCount(): LiveData<Int> {
-        if (count1 == null) {
-            count1 = MutableLiveData()
+            unicornClient.enqueue(object : Callback<NeedsSum> {
+                override fun onFailure(call: Call<NeedsSum>?, t: Throwable?) {
+                    Log.e("ERROR", t?.message)
+                }
+
+                override fun onResponse(call: Call<NeedsSum>?, response: Response<NeedsSum>?) {
+                    needsSum?.value = response?.body()
+                }
+            })
         }
-
-        return count1 as MutableLiveData<Int>
     }
 }

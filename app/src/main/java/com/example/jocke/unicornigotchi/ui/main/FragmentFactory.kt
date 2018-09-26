@@ -1,13 +1,21 @@
 package com.example.jocke.unicornigotchi.ui.main
 
-import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
+import android.view.View
+import com.example.jocke.unicornigotchi.R
+import com.example.jocke.unicornigotchi.dto.Discipline
+import com.example.jocke.unicornigotchi.dto.Need
+import com.example.jocke.unicornigotchi.dto.Play
+import com.example.jocke.unicornigotchi.dto.Toilet
 
-public class FragmentFactory {
+class FragmentFactory {
 
     val listFragmentChecker = hashMapOf<String, FragmentOverhead>()
 
     private fun initializeFragmentChecker() {
-        listFragmentChecker[DisciplineFragment::class.simpleName!!] = Discipline()
+        listFragmentChecker[Discipline::class.simpleName!!] = DisciplineOverhead()
+        listFragmentChecker[Play::class.simpleName!!] = PlayOverhead()
+        listFragmentChecker[Toilet::class.simpleName!!] = ToiletOverhead()
     }
 
 
@@ -15,18 +23,31 @@ public class FragmentFactory {
         initializeFragmentChecker()
     }
 
-    public fun validateFragmentAndReturnFragment(fragment: Fragment): Fragment? {
-        return listFragmentChecker[fragment::class.simpleName]?.getFragment()
+    fun validateFragmentAndReturnFragment(clickedView: View, need: Need): Int {
+        return listFragmentChecker[need::class.simpleName]!!.getFragment(clickedView)
     }
 
 
-    class Discipline : FragmentOverhead {
-        override fun getFragment(): DisciplineFragment {
-            return DisciplineFragment()
+    class DisciplineOverhead : FragmentOverhead {
+        override fun getFragment(clickedView: View): Int {
+            clickedView.background = ContextCompat.getDrawable(clickedView.context, R.drawable.ic_sentiment_dissatisfied_black_24dp)
+            return R.id.action_mainFragment_to_disciplineFragment
+        }
+    }
+
+    class ToiletOverhead : FragmentOverhead {
+        override fun getFragment(clickedView: View): Int {
+            return R.id.action_mainFragment_to_toiletFragment
+        }
+    }
+
+    class PlayOverhead : FragmentOverhead {
+        override fun getFragment(clickedView: View): Int {
+            return R.id.action_mainFragment_to_playFragment
         }
     }
 
     interface FragmentOverhead {
-        fun getFragment(): Fragment
+        fun getFragment(clickedView: View): Int
     }
 }

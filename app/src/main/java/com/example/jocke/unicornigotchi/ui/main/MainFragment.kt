@@ -6,130 +6,109 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
 import android.widget.ProgressBar
 import android.widget.TextView
 import com.example.jocke.unicornigotchi.MainActivity
 import com.example.jocke.unicornigotchi.R
+import com.example.jocke.unicornigotchi.dto.Need
+import com.example.jocke.unicornigotchi.dto.NeedsSum
 import com.example.jocke.unicornigotchi.dto.Unicorn
 
 
 class MainFragment : Fragment() {
 
-    private lateinit var unicornRecyclerView: RecyclerView
-    private lateinit var fetchData: TextView
-    private lateinit var firstName: TextView
-    private lateinit var lastName: TextView
-    private lateinit var happyBar: ProgressBar
-    private lateinit var toiletNeedButton: ImageButton
-    private lateinit var playNeedButton: ImageButton
-    private lateinit var disciplineNeedButton: ImageButton
-
-
-    companion object {
-        fun newInstance() = MainFragment()
-    }
-
     private lateinit var viewModel: MainViewModel
-//    private lateinit var unicornRecyclerViewAdapter: UnicornRecyclerViewAdapter
+    private lateinit var unicornRecyclerView: RecyclerView
+    private lateinit var unicornRecyclerViewAdapter: UnicornRecyclerViewAdapter
+    private lateinit var fetchData: TextView
+    private lateinit var firstNameTextView: TextView
+    private lateinit var lastNameTextView: TextView
+    private lateinit var happyBar: ProgressBar
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        setupObservers()
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View {
-
-        return inflater.inflate(R.layout.main_fragment, container, false)
-    }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
+            inflater.inflate(R.layout.main_fragment, container, false)
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        //Error handling
         setupViewModel()
         getViews(view)
+        setupObserverForUnicornAndNotifyAdapter()
+        setupObserverForNeedsSum()
         setupRecyclerView()
 
-        val progressbarDrawable = context?.let { ContextCompat.getDrawable(it, R.drawable.custom_progressbar) }
-        happyBar.progressDrawable = progressbarDrawable
+
+        happyBar.progressDrawable = context?.let { ContextCompat.getDrawable(it, R.drawable.custom_progressbar) }
+
+        viewModel.fetchSumOfPositiveNeeds()
 
         fetchData.setOnClickListener {
-            viewModel.fetchData()
+            viewModel.fetchUnicorn(1)
         }
-        viewModel.fetchData()
-
-        setupUglyHardcodedStuff()
+        viewModel.fetchUnicorn(1)
 
         super.onViewCreated(view, savedInstanceState)
     }
 
 
     private fun getViews(view: View) {
-//        unicornRecyclerView = view.findViewById(R.id.unicorns_recyclerview)
+        unicornRecyclerView = view.findViewById(R.id.unicorns_recyclerview)
         fetchData = view.findViewById(R.id.fetch_data)
-        firstName = view.findViewById(R.id.firstname)
-        lastName = view.findViewById(R.id.lastname)
+        firstNameTextView = view.findViewById(R.id.firstname)
+        lastNameTextView = view.findViewById(R.id.lastname)
         happyBar = view.findViewById(R.id.happy_bar)
-        disciplineNeedButton = view.findViewById(R.id.discipline_need_button)
-        playNeedButton = view.findViewById(R.id.play_need_button)
-        toiletNeedButton = view.findViewById(R.id.toilet_need_button)
 
     }
 
     private fun setupViewModel() {
         viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
         viewModel.initializeRetrofit()
-        viewModel.fetchData()
     }
 
 
-    private fun setupObservers() {
-        viewModel.getUnicorns().observe(this, Observer<List<Unicorn>> {
-            it?.let {
-                firstName.text = it[0].firstName
-                lastName.text = it[0].lastName
-            }
-//TODO REMOVE CARE FROM API AND ONLY USE LIST?
+    private fun setupObserverForUnicornAndNotifyAdapter() {
+        viewModel.getUnicornLiveData().observe(viewLifecycleOwner, Observer<Unicorn> { unicorn ->
+            val listOfNeeds = mutableListOf<Need>()
+            unicorn?.let {
+                it.apply {
+                    firstNameTextView.text = firstName
+                    lastNameTextView.text = lastName
+                    listOfNeeds.add(care.discipline)
+                    listOfNeeds.add(care.play)
+                    listOfNeeds.add(care.toilet)
+                }
+                //TODO REMOVE CARE FROM API AND ONLY USE LIST?
 
-//            it?.let {
-//                unicornRecyclerViewAdapter.care = addNeeds(it[0].care)
-//                unicornRecyclerViewAdapter.notifyDataSetChanged()
-//            }
+                unicornRecyclerViewAdapter.need = listOfNeeds.toList()
+                unicornRecyclerViewAdapter.notifyDataSetChanged()
+            }
         })
     }
 
-    private fun setupUglyHardcodedStuff() {
-        val mainActivity = (this.activity as MainActivity)
+    private fun setupObserverForNeedsSum() {
+        viewModel.getPositiveNeedsLiveData().observe(viewLifecycleOwner, Observer<NeedsSum> { needsSum ->
 
-        disciplineNeedButton.setOnClickListener {
-            mainActivity.goToFragment(it, R.id.action_mainFragment_to_disciplineFragment)
-            //mainActivity.goToFragment(FragmentFactory().validateFragmentAndReturnFragment(fragmentToGoTo!!)!!)
-        }
-        playNeedButton.setOnClickListener {
-            mainActivity.goToFragment(it, R.id.action_mainFragment_to_playFragment)
-        }
-
-        toiletNeedButton.setOnClickListener {
-            mainActivity.goToFragment(it, R.id.action_mainFragment_to_toiletFragment)
-            //   mainActivity.goToFragment(FragmentFactory().validateFragmentAndReturnFragment(fragmentToGoTo!!)!!)
-        }
-
+            needsSum?.let {
+                happyBar.progress = needsSum.sumOfAllNeeds
+            }
+        })
     }
 
+
+    fun traverseToFragment(clickedView: View, need: Need) {
+        (this.activity as MainActivity).goToFragment(clickedView, FragmentFactory().validateFragmentAndReturnFragment(clickedView, need))
+    }
 
     private fun setupRecyclerView() {
-//        //TODO CALCULATE BASED ON THE NUMBER OF NEEEDS
-//        val stagg = StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL)
-//        stagg.reverseLayout = true
-//        unicornRecyclerView.layoutManager = stagg
-//        unicornRecyclerViewAdapter = UnicornRecyclerViewAdapter(emptyList(), viewModel)
-//        unicornRecyclerView.adapter = unicornRecyclerViewAdapter
+        //TODO CALCULATE BASED ON THE NUMBER OF NEEEDS
+        val staggeredGridLayoutManager = StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL)
+        staggeredGridLayoutManager.reverseLayout = true
+        unicornRecyclerView.layoutManager = staggeredGridLayoutManager
+        unicornRecyclerViewAdapter = UnicornRecyclerViewAdapter(emptyList(), this)
+        unicornRecyclerView.adapter = unicornRecyclerViewAdapter
     }
-}
-
-interface FragmentSwitch {
-    fun fragment(fragment: Fragment)
 }

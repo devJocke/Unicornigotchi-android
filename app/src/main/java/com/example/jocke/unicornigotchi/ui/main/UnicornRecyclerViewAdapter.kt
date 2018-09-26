@@ -7,48 +7,33 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import com.example.jocke.unicornigotchi.R
-import com.example.jocke.unicornigotchi.dto.Care
+import com.example.jocke.unicornigotchi.dto.Need
 
-class UnicornRecyclerViewAdapter(var care: List<Care> = emptyList(), var mainViewModel: MainViewModel) : RecyclerView.Adapter<CareHolder>() {
+class UnicornRecyclerViewAdapter(var need: List<Need> = emptyList(), val fragment: Fragment) : RecyclerView.Adapter<NeedHolder>() {
 
-    override fun onCreateViewHolder(viewGroup: ViewGroup, p1: Int): CareHolder {
-        return CareHolder(LayoutInflater.from(viewGroup.context).inflate(R.layout.needs_recyclerview, viewGroup, false))
+    override fun onCreateViewHolder(viewGroup: ViewGroup, p1: Int): NeedHolder {
+        return NeedHolder(LayoutInflater.from(viewGroup.context).inflate(R.layout.needs_recyclerview, viewGroup, false))
     }
 
-    override fun onBindViewHolder(uHolder: CareHolder, position: Int) {
-        uHolder.bindPerson(care[position], mainViewModel)
+    override fun onBindViewHolder(needHolder: NeedHolder, position: Int) {
+        needHolder.bindPerson(need[position], fragment)
     }
 
     override fun getItemCount(): Int {
-        return care.size
+        return need.size
     }
 }
 
-class CareHolder(view: View) : RecyclerView.ViewHolder(view), FragmentSwitch {
+class NeedHolder(view: View) : RecyclerView.ViewHolder(view) {
 
+    fun bindPerson(need: Need, fragment: Fragment) = with(need) {
+        val needButton = itemView.findViewById<ImageButton>(R.id.need_button)
 
-    private var mainFragment: MainFragment? = null
+        //  needButton.background = ContextCompat.getDrawable(clickedView.context, R.drawable.ic_sentiment_dissatisfied_black_24dp)
 
-    override fun fragment(fragment: Fragment) {
-        if(fragment is MainFragment) {
-            mainFragment = fragment
+        needButton.setOnClickListener {
+            (fragment as? MainFragment)?.traverseToFragment(it, need)
+            //TODO Traverse to next page or something
         }
-        //FragmentFactory()
-    }
-
-
-    fun bindPerson(care: Care, viewmodel: MainViewModel) = with(care) {
-        var needButton = itemView.findViewById<ImageButton>(R.id.discipline_need_button)
-
-        //Todo Create json file
-//        if (care is Discipline) {
-//            needButton.setBackgroundResource(R.drawable.ic_sentiment_dissatisfied_black_24dp)
-//            needButton.setOnClickListener {
-//                mainFragment?.let {
-//                    it.goToFragment()
-//                }
-//                //TODO Traverse to next page or something
-//            }
-//        }
     }
 }

@@ -6,17 +6,11 @@ import android.view.View
 import androidx.navigation.Navigation
 import androidx.navigation.Navigation.findNavController
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity()  {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
-//        if (savedInstanceState == null) {
-//            supportFragmentManager.beginTransaction()
-//                    .replace(R.id.host_fragment, MainFragment.newInstance())
-//                    .commitNow()
-//        }
-
     }
 
     override fun onSupportNavigateUp(): Boolean {
