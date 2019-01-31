@@ -10,7 +10,7 @@ import com.example.jocke.unicornigotchi.R
 class ToiletFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val rootView = inflater.inflate(R.layout.discipline_main, container, false)
+        val rootView = inflater.inflate(R.layout.toilet_main, container, false)
         return rootView
     }
 }
