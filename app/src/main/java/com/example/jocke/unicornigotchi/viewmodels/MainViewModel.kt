@@ -1,4 +1,4 @@
-package com.example.jocke.unicornigotchi.ui.main
+package com.example.jocke.unicornigotchi.viewmodels
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
@@ -50,7 +50,7 @@ class MainViewModel : ViewModel() {
         }
         val builder = Retrofit.Builder()
                 //Get from 10.0.2.2: on emulator
-                //https://unicornigotchiapi20180916102845.azurewebsites.net/
+//                .baseUrl("https://unicornigotchiapi20180916102845.azurewebsites.net/")
                 .baseUrl("http://10.0.2.2:53836/")
                 .addConverterFactory(GsonConverterFactory.create())
         retrofit = builder.build()
