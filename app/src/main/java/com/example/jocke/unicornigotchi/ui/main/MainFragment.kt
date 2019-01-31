@@ -17,13 +17,14 @@ import com.example.jocke.unicornigotchi.R
 import com.example.jocke.unicornigotchi.dto.Need
 import com.example.jocke.unicornigotchi.dto.NeedsSum
 import com.example.jocke.unicornigotchi.dto.Unicorn
+import com.example.jocke.unicornigotchi.viewmodels.MainViewModel
 
 
 class MainFragment : Fragment() {
 
     private lateinit var viewModel: MainViewModel
     private lateinit var unicornRecyclerView: RecyclerView
-    private lateinit var unicornRecyclerViewAdapter: UnicornRecyclerViewAdapter
+    private lateinit var unicornNeedsRecyclerview: UnicornNeedsRecyclerview
     private lateinit var fetchData: TextView
     private lateinit var firstNameTextView: TextView
     private lateinit var lastNameTextView: TextView
@@ -35,12 +36,11 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         //Error handling
-        setupViewModel()
+        setupViewModelAndRetrofit()
         getViews(view)
         setupObserverForUnicornAndNotifyAdapter()
-        setupObserverForNeedsSum()
+        setupObserverForNeedsProgressbar()
         setupRecyclerView()
-
 
         happyBar.progressDrawable = context?.let { ContextCompat.getDrawable(it, R.drawable.custom_progressbar) }
 
@@ -54,22 +54,33 @@ class MainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
     }
 
-
+    /**
+     * Initializes views without using synthetic for more clarity
+     */
     private fun getViews(view: View) {
-        unicornRecyclerView = view.findViewById(R.id.unicorns_recyclerview)
-        fetchData = view.findViewById(R.id.fetch_data)
-        firstNameTextView = view.findViewById(R.id.firstname)
-        lastNameTextView = view.findViewById(R.id.lastname)
-        happyBar = view.findViewById(R.id.happy_bar)
-
+        view.apply {
+            unicornRecyclerView = findViewById(R.id.unicorns_recyclerview)
+            fetchData = findViewById(R.id.fetch_data)
+            firstNameTextView = findViewById(R.id.firstname)
+            lastNameTextView = findViewById(R.id.lastname)
+            happyBar = findViewById(R.id.happy_bar)
+        }
     }
 
-    private fun setupViewModel() {
+    /**
+     * Bind the @see[MainViewModel] with this fragment, we can now observe livedata from the viewmodel
+     */
+    private fun setupViewModelAndRetrofit() {
         viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
         viewModel.initializeRetrofit()
     }
 
-
+    /**
+     * Use this fragment lifecycle and listen to any changes from the unicorn livedata
+     * Populates the views with unicorn information
+     * Recyclerview retrieves the needs of the unicorn
+     * @see Unicorn for parameters
+     */
     private fun setupObserverForUnicornAndNotifyAdapter() {
         viewModel.getUnicornLiveData().observe(viewLifecycleOwner, Observer<Unicorn> { unicorn ->
             val listOfNeeds = mutableListOf<Need>()
@@ -83,22 +94,26 @@ class MainFragment : Fragment() {
                 }
                 //TODO REMOVE CARE FROM API AND ONLY USE LIST?
 
-                unicornRecyclerViewAdapter.need = listOfNeeds.toList()
-                unicornRecyclerViewAdapter.notifyDataSetChanged()
+                unicornNeedsRecyclerview.need = listOfNeeds.toList()
+                unicornNeedsRecyclerview.notifyDataSetChanged()
             }
         })
     }
 
-    private fun setupObserverForNeedsSum() {
+    /**
+     * Look for any changes done to the needs and update the happiness bar with the combining sum calculated based on how many needs there are
+     */
+    private fun setupObserverForNeedsProgressbar() {
         viewModel.getPositiveNeedsLiveData().observe(viewLifecycleOwner, Observer<NeedsSum> { needsSum ->
-
             needsSum?.let {
                 happyBar.progress = needsSum.sumOfAllNeeds
             }
         })
     }
 
-
+    /**
+     * Responsible for delegating the fragment traversal
+     */
     fun traverseToFragment(clickedView: View, need: Need) {
         (this.activity as MainActivity).goToFragment(clickedView, FragmentFactory().validateFragmentAndReturnFragment(clickedView, need))
     }
@@ -108,7 +123,7 @@ class MainFragment : Fragment() {
         val staggeredGridLayoutManager = StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL)
         staggeredGridLayoutManager.reverseLayout = true
         unicornRecyclerView.layoutManager = staggeredGridLayoutManager
-        unicornRecyclerViewAdapter = UnicornRecyclerViewAdapter(emptyList(), this)
-        unicornRecyclerView.adapter = unicornRecyclerViewAdapter
+        unicornNeedsRecyclerview = UnicornNeedsRecyclerview(emptyList(), this)
+        unicornRecyclerView.adapter = unicornNeedsRecyclerview
     }
 }
