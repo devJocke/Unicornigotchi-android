@@ -1,6 +1,5 @@
 package com.example.jocke.unicornigotchi.ui.main
 
-import android.support.v4.content.ContextCompat
 import android.view.View
 import com.example.jocke.unicornigotchi.R
 import com.example.jocke.unicornigotchi.dto.Discipline
@@ -30,7 +29,6 @@ class FragmentFactory {
 
     class DisciplineOverhead : FragmentOverhead {
         override fun getFragment(clickedView: View): Int {
-            clickedView.background = ContextCompat.getDrawable(clickedView.context, R.drawable.ic_sentiment_dissatisfied_black_24dp)
             return R.id.action_mainFragment_to_disciplineFragment
         }
     }
